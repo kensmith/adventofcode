@@ -42,7 +42,19 @@ def invalid_ids(x, y):
     return result
 
 def main():
-    print("main")
+    with open("input") as f:
+        content = f.read().strip()
+        intervals = content.split(",")
+        sum = 0
+        for interval in intervals:
+            pair = [int(x) for x in interval.split("-")]
+            if len(pair) != 2:
+                continue
+            invalids = invalid_ids(pair[0], pair[1])
+            for n in invalids:
+                sum += n
+        print(sum)
+
 
 if __name__ == "__main__":
     main()
