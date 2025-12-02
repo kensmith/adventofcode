@@ -19,25 +19,28 @@ def incr_fragment(fragment):
 def invalid_ids(x, y):
     num_digits_x = math.ceil(math.log10(x))
     num_digits_y = math.ceil(math.log10(y))
-    if num_digits_x == num_digits_y:
-        if is_odd(num_digits_x):
-            return []
-    smallest_half_x = math.ceil(num_digits_x / 2.0)
-    fragment = [1]
-    smallest_half_x -= 1
-    smallest_half_x = max(smallest_half_x, 0)
-    fragment += [0] * smallest_half_x
-    result = []
+    max_digits = max(num_digits_x, num_digits_y)
+    ratio = 2
+    result = set()
     while True:
-        candidate = fragment * 2
-        fragment = incr_fragment(fragment)
-        n = to_int(candidate)
-        if n < x:
-            continue
-        if x <= n and n <= y:
-            result += [n]
-        if y < n:
+        smallest_half_x = math.floor(max_digits / ratio)
+        if smallest_half_x <= 0:
             break
+        fragment = [1]
+        smallest_half_x -= 1
+        smallest_half_x = max(smallest_half_x, 0)
+        fragment += [0] * smallest_half_x
+        while True:
+            candidate = fragment * ratio
+            fragment = incr_fragment(fragment)
+            n = to_int(candidate)
+            if n < x:
+                continue
+            if x <= n and n <= y:
+                result.add(n)
+            if y < n:
+                break
+        ratio += 1
     return result
 
 def main():

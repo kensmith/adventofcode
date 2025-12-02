@@ -25,14 +25,14 @@ from main import *
 
 def test_example():
     print("")
-    #assert [] == invalid_ids(1698522, 1698528) # []
-    print(invalid_ids(824824821, 824824827)) # []
-    # assert [11, 22] == invalid_ids(11, 22) # [11, 22]
-    # assert [99] == invalid_ids(95, 115) # [99]
-    # assert [1010] == invalid_ids(998, 1012) # [1010]
-    # assert [1188511885] == invalid_ids(1188511880, 1188511890) # 1188511885
-    # assert [222222] == invalid_ids(222220, 222224) # 222222
-    # assert [446446] == invalid_ids(446443, 446449) # [446446]
-    # assert [38593859] == invalid_ids(38593856, 38593862) # 38593859
-    # assert [] == invalid_ids(565653, 565659) # []
-    # assert [] == invalid_ids(2121212118, 2121212124) # []
+    assert set() == invalid_ids(1698522, 1698528) # []
+    assert {824824824} == invalid_ids(824824821, 824824827) # []
+    assert {11, 22} == invalid_ids(11, 22) # [11, 22]
+    assert {99, 111} == invalid_ids(95, 115) # [99]
+    assert {999, 1010} == invalid_ids(998, 1012) # [1010]
+    assert {1188511885} == invalid_ids(1188511880, 1188511890) # 1188511885
+    assert {222222} == invalid_ids(222220, 222224) # 222222
+    assert {446446} == invalid_ids(446443, 446449) # [446446]
+    assert {38593859} == invalid_ids(38593856, 38593862) # 38593859
+    assert {565656} == invalid_ids(565653, 565659) # []
+    assert {2121212121} == invalid_ids(2121212118, 2121212124) # []
