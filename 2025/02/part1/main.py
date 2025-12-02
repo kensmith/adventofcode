@@ -23,7 +23,6 @@ def invalid_ids(x, y):
         if is_odd(num_digits_x):
             return []
     smallest_half_x = math.ceil(num_digits_x / 2.0)
-    smallest_half_y = math.ceil(num_digits_y / 2.0)
     fragment = [1]
     smallest_half_x -= 1
     smallest_half_x = max(smallest_half_x, 0)
