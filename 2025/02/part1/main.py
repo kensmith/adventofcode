@@ -1,8 +1,5 @@
 import math
 
-def is_odd(x):
-    return x % 2 == 1
-
 def to_int(candidate):
     return int(''.join([str(x) for x in candidate]))
 
@@ -19,7 +16,7 @@ def incr_fragment(fragment):
 def invalid_ids(x, y):
     num_digits_x = math.ceil(math.log10(x))
     num_digits_y = math.ceil(math.log10(y))
-    smallest_half_x = math.ceil(num_digits_x / 2.0)
+    smallest_half_x = math.floor(num_digits_x / 2)
     fragment = [1]
     smallest_half_x -= 1
     smallest_half_x = max(smallest_half_x, 0)

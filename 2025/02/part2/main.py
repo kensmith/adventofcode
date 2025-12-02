@@ -1,8 +1,5 @@
 import math
 
-def is_odd(x):
-    return x % 2 == 1
-
 def to_int(candidate):
     return int(''.join([str(x) for x in candidate]))
 
@@ -23,13 +20,13 @@ def invalid_ids(x, y):
     ratio = 2
     result = set()
     while True:
-        smallest_half_x = math.floor(max_digits / ratio)
-        if smallest_half_x <= 0:
+        smallest_half = math.floor(max_digits / ratio)
+        if smallest_half <= 0:
             break
         fragment = [1]
-        smallest_half_x -= 1
-        smallest_half_x = max(smallest_half_x, 0)
-        fragment += [0] * smallest_half_x
+        smallest_half -= 1
+        smallest_half = max(smallest_half, 0)
+        fragment += [0] * smallest_half
         while True:
             candidate = fragment * ratio
             fragment = incr_fragment(fragment)
