@@ -19,6 +19,9 @@ def incr_fragment(fragment):
 def invalid_ids(x, y):
     num_digits_x = math.ceil(math.log10(x))
     num_digits_y = math.ceil(math.log10(y))
+    if num_digits_x == num_digits_y:
+        if is_odd(num_digits_x):
+            return []
     smallest_half_x = math.ceil(num_digits_x / 2.0)
     fragment = [1]
     smallest_half_x -= 1
