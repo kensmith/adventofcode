@@ -6,8 +6,6 @@ Sorry for the convenience.
 Mitch Hedberg
 """
 
-import heapq
-
 num_digits = 12
 
 def to_int(arr):
