@@ -1,4 +1,3 @@
-
 class Grid:
     max_bales = 4
     def __init__(self, s):
@@ -9,6 +8,12 @@ class Grid:
         assert self.width > 0
         self.grid = "".join(lines)
         self.grid_len = len(self.grid)
+
+    def __repr__(self):
+        sb = []
+        for i in range(0, self.grid_len, self.width):
+            sb += [self.grid[i:i+self.width]]
+        return "\n".join(sb)
 
     def L(self, x, y):
         return x == 0
@@ -47,8 +52,11 @@ class Grid:
         indices = list(filter(lambda x: x >= 0 and x < self.grid_len, indices))
         return indices
 
+    def coord_to_i(self, x, y):
+        return y * self.width + x
+
     def neighbors(self, x, y):
-        i = y * self.width + x
+        i = self.coord_to_i(x, y)
         indices = list(range(i - self.width - 1, i - self.width + 2))
         indices += [i - 1, i + 1]
         indices += list(range(i + self.width - 1, i + self.width + 2))
@@ -64,7 +72,7 @@ class Grid:
         return len(p) < self.max_bales
 
     def element(self, x, y):
-        i = y * self.width + x
+        i = self.coord_to_i(x, y)
         assert i >= 0
         assert i < self.grid_len
         return self.grid[i]
@@ -77,15 +85,40 @@ class Grid:
                     result += [(x, y)]
         return result
 
-    def num_accessible(self):
+    def accessible_paper(self):
         o = self.paper_positions()
         acc = list(filter(lambda x: self.can_access(*x), o))
-        return len(acc)
+        return acc
+
+    def remove_paper(self, x, y):
+        assert self.element(x, y) == '@'
+        i = self.coord_to_i(x, y)
+
+        # gc stress test, lol
+        self.grid = self.grid[:i] + '.' + self.grid[i+1:]
+
+    def remove_accessible_paper(self):
+        accessible = self.accessible_paper()
+        num_removed = len(accessible)
+        for pair in accessible:
+            self.remove_paper(*pair)
+        return num_removed
+
+    def remove_all_paper(self):
+        orig_num_accessible = len(self.accessible_paper())
+        total = 0
+        removed = 1
+        while removed > 0:
+            removed = self.remove_accessible_paper()
+            total += removed
+            print(f"removed = {removed}, total = {total}")
+        return total
 
 def main():
     with open('input') as f:
         grid = Grid(f.read())
-        print(grid.num_accessible())
+        total = grid.remove_all_paper()
+        print(f"removed {total} papers")
 
 if __name__ == "__main__":
     main()
