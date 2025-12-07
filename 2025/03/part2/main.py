@@ -9,12 +9,7 @@ Mitch Hedberg
 num_digits = 12
 
 def to_int(arr):
-    mult = 1
-    result = 0
-    for i in range(len(arr) - 1, -1, -1):
-        result += int(arr[i]) * mult
-        mult *= 10
-    return result
+    return int("".join(map(str, arr)))
 
 def find_max(p, q, s):
     max_i = p
