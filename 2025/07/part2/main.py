@@ -1,4 +1,5 @@
 from functools import cache
+
 class Manifold:
     def __init__(self, s):
         self.s = list(map(list, s.strip().split("\n")))
