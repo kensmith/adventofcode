@@ -1,8 +1,10 @@
+from functools import cache
 class Manifold:
     def __init__(self, s):
         self.s = list(map(list, s.strip().split("\n")))
         self.find_emitter()
 
+    @cache
     def rows(self):
         return len(self.s)
 
@@ -20,17 +22,15 @@ class Manifold:
     def fire(self):
         return self.fire_helper(self.emitter, 0)
 
+    @cache
     def fire_helper(self, x, y):
         if y >= self.rows() - 1:
-            print(f"done at ({x}, {y})")
             return 1
 
         ny = y + 1
         if self.s[ny][x] == "^":
-            print(f"splitting at ({x}, {y})")
             return self.fire_helper(x-1, ny) + self.fire_helper(x+1, ny)
 
-        print(f"(continuing at ({x}, {y})")
         return self.fire_helper(x, ny)
 
 def main():
