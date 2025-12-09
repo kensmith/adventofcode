@@ -17,16 +17,27 @@ class Floor:
         self.height = 0
         self.red = []
         self.red_set = set()
+        min_x = 1000000
+        min_y = 1000000
         for line in lines:
             lhs, rhs = line.split(",")
             coord = (int(lhs), int(rhs))
+            min_x = min(min_x, coord[0])
+            min_y = min(min_y, coord[1])
             self.red.append(coord)
-            self.red_set.add(coord)
             self.width = max(self.width, coord[0])
             self.height = max(self.height, coord[1])
+        for i in range(len(self.red)):
+            x, y = self.red[i]
+            self.red[i] = (x - min_x, y - min_y)
+            self.red_set.add(self.red[i])
+        self.width -= min_x
+        self.height -= min_y
+        print(min_x, min_y)
         self.width += 1
         self.height += 1
         self.colorize_border()
+        self.exterior = set()
         self.flood_exterior()
     
     def __repr__(self):
@@ -69,20 +80,16 @@ class Floor:
     def flood_exterior(self):
         stack = []
         for y in range(self.height):
-            print('computing vertical borders')
             for x in (0, self.width - 1):
                 coord = (x, y)
                 if not self.is_border(coord):
                     stack.append(coord)
         for x in range(self.width):
-            print('computing horizontal borders')
             for y in (0, self.height - 1):
                 coord = (x, y)
                 if not self.is_border(coord):
                     stack.append(coord)
 
-        print("starting flood")
-        self.exterior = set()
         while stack:
             print(len(stack))
             coord = stack.pop()
@@ -112,7 +119,7 @@ class Floor:
 def main():
     with open('input') as f:
         f = Floor(f.read())
-        print(f)
+        #print(f)
         print(f.largest())
 
 
