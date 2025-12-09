@@ -11,8 +11,19 @@ sample = """
 7,3
 """
 
+"""
+............
+.......XXXXX
+.......XIIIX
+..XXXXXX...X
+..XIIIIIIIIX
+..XXXXXXXX.X
+.........XIX
+.........XXX
+"""
+
 def test_sample():
     print("")
     f = Floor(sample)
     print(f)
-    f.largest()
+    print(f.largest())

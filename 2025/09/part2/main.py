@@ -1,4 +1,5 @@
-from itertools import pairwise
+from functools import cache
+from itertools import pairwise, combinations
 
 def incr(x, rhs):
     if x[0] < rhs[0]:
@@ -10,6 +11,19 @@ def incr(x, rhs):
     if x[1] > rhs[1]:
         return (x[0], x[1]-1)
 
+def area(lhs, rhs):
+    width = abs(rhs[0] - lhs[0]) + 1
+    height = abs(rhs[1] - lhs[1]) + 1
+    area = width * height
+    return area
+
+@cache
+def idealized_corners(lhs, rhs):
+    return (
+            (min(lhs[0], rhs[0]), min(lhs[1], rhs[1])),
+            (max(lhs[0], rhs[0]), max(lhs[1], rhs[1]))
+            )
+
 class Floor:
     def __init__(self, s):
         lines = s.strip().split("\n")
@@ -17,28 +31,17 @@ class Floor:
         self.height = 0
         self.red = []
         self.red_set = set()
-        min_x = 1000000
-        min_y = 1000000
         for line in lines:
-            lhs, rhs = line.split(",")
-            coord = (int(lhs), int(rhs))
-            min_x = min(min_x, coord[0])
-            min_y = min(min_y, coord[1])
+            lhs, rhs = map(int, line.split(","))
+            coord = (lhs, rhs)
             self.red.append(coord)
+            self.red_set.add(coord)
             self.width = max(self.width, coord[0])
             self.height = max(self.height, coord[1])
-        for i in range(len(self.red)):
-            x, y = self.red[i]
-            self.red[i] = (x - min_x, y - min_y)
-            self.red_set.add(self.red[i])
-        self.width -= min_x
-        self.height -= min_y
-        print(min_x, min_y)
         self.width += 1
         self.height += 1
         self.colorize_border()
-        self.exterior = set()
-        self.flood_exterior()
+        self.interior = set()
     
     def __repr__(self):
         lines = []
@@ -46,13 +49,29 @@ class Floor:
             line = []
             for x in range(self.width):
                 coord = (x, y)
-                if coord not in self.exterior:
-                    line.append('X')
+                if self.is_interior(coord):
+                    line.append('I')
                     continue
                 line.append('.')
             lines.append(''.join(line))
         return '\n'.join(lines)
 
+    @cache
+    def is_interior(self, coord):
+        if self.is_border(coord):
+            return True
+        on_border = False
+        intersections = 0
+        for x in range(coord[0], -1, -1):
+            c = (x, coord[1])
+            if self.is_border(c):
+                if not on_border:
+                    on_border = True
+                    intersections += 1
+            else:
+                on_boarder = False
+        internal = intersections % 2 == 1
+        return internal
 
     def colorize_border(self):
         self.border = set()
@@ -67,9 +86,7 @@ class Floor:
             if lhs not in self.red_set:
                 self.border.add(lhs)
 
-    def is_interior(self, coord):
-        return coord not in self.exterior
-
+    @cache
     def is_border(self, coord):
         if coord in self.red_set:
             return True
@@ -77,44 +94,41 @@ class Floor:
             return True
         return False
 
-    def flood_exterior(self):
-        stack = []
-        for y in range(self.height):
-            for x in (0, self.width - 1):
-                coord = (x, y)
-                if not self.is_border(coord):
-                    stack.append(coord)
-        for x in range(self.width):
-            for y in (0, self.height - 1):
-                coord = (x, y)
-                if not self.is_border(coord):
-                    stack.append(coord)
-
-        while stack:
-            print(len(stack))
-            coord = stack.pop()
-            if coord in self.exterior or self.is_border(coord):
-                continue
-
-            x,y = coord
-            if x < 0 or x >= self.width:
-                continue
-            if y < 0 or y >= self.height:
-                continue
-
-            self.exterior.add(coord)
-
-            for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
-                stack.append((x+dx, y+dy))
-
     def largest(self):
-        return 0
+        areas = []
+        for lhs, rhs in combinations(self.red, 2):
+            areas.append((area(lhs,rhs), lhs, rhs))
+        areas.sort()
+        result = -1
+        for i in range(len(areas)-1, -1, -1):
+            a, lhs, rhs = areas[i]
+            print(f"hi = {a}, {lhs}, {rhs}")
+            ul, lr = idealized_corners(lhs, rhs)
+            all_interior = True
+            print("vertical borders")
+            for y in range(ul[1], lr[1]+1):
+                left_x = ul[0]
+                right_x = lr[0]
+                if not self.is_interior((left_x, y)):
+                    all_interior = False
+                    break
+                if not self.is_interior((right_x, y)):
+                    all_interior = False
+                    break
+            print("horizontal borders")
+            for x in range(ul[0], lr[0]+1):
+                top_y = ul[1]
+                bottom_y = lr[1]
+                if not self.is_interior((x, top_y)):
+                    all_interior = False
+                    break
+                if not self.is_interior((x, bottom_y)):
+                    all_interior = False
+                    break
 
-    def area(self, lhs, rhs):
-        width = abs(rhs[0] - lhs[0]) + 1
-        height = abs(rhs[1] - lhs[1]) + 1
-        area = width * height
-        return area
+            if all_interior:
+                result = a
+        return result
 
 def main():
     with open('input') as f:

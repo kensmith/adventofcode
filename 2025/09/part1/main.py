@@ -18,6 +18,8 @@ class Floor:
         area = width * height
         return area
 
+# wrong answers
+# 4709146530
 def main():
     with open('input') as f:
         f = Floor(f.read())
