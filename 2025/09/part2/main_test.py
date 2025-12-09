@@ -13,17 +13,17 @@ sample = """
 
 """
 ............
-.......XXXXX
-.......XIIIX
-..XXXXXX...X
-..XIIIIIIIIX
-..XXXXXXXX.X
-.........XIX
-.........XXX
+.......IIIII
+.......IIIII
+..IIIIIIIIII
+..IIIIIIIIII
+..IIIIIIIIII
+.........III
+.........III
 """
 
 def test_sample():
     print("")
     f = Floor(sample)
     print(f)
-    print(f.largest())
+    assert 24 == f.largest()
