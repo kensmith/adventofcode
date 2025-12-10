@@ -1,3 +1,5 @@
+from itertools import product
+
 class Panel:
     def __init__(self, s):
         s = s.strip().replace("]","")
@@ -12,26 +14,21 @@ class Panel:
                 continue
             self.targets.append(1)
 
+    def repr_helper(self, things):
+        sb = []
+        sb.append("[")
+        for thing in things:
+            if thing:
+                sb.append("#")
+                continue
+            sb.append(".")
+        sb.append("]")
+        return "".join(sb)
+
     def __repr__(self):
         sb = []
-        ssb = []
-        ssb.append("[")
-        for light in self.lights:
-            if light:
-                ssb.append("#")
-                continue
-            ssb.append(".")
-        ssb.append("]")
-        sb.append("".join(ssb))
-        ssb = []
-        ssb.append("[")
-        for target in self.targets:
-            if target:
-                ssb.append("#")
-                continue
-            ssb.append(".")
-        ssb.append("]")
-        sb.append("".join(ssb))
+        sb.append(self.repr_helper(self.lights))
+        sb.append(self.repr_helper(self.targets))
         return " ".join(sb)
 
     def solved(self):
@@ -52,26 +49,13 @@ class Button:
             sb.append(str(toggle))
         return "(" + ",".join(sb) + ")"
 
-class Buttons:
-    def __init__(self, tokens):
-        self.buttons = []
-        for token in tokens:
-            self.buttons.append(Button(token))
-
-    def __repr__(self):
-        sb = []
-        for button in self.buttons:
-            sb.append(str(button))
-        return " ".join(sb)
-
-    def mash(self):
-        return 0
-
 class Machine:
     def __init__(self, s):
-        tok = s.split(" ")
-        self.panel = Panel(tok[0])
-        self.buttons = Buttons(tok[1:len(tok)-1])
+        tokens = s.split(" ")
+        self.panel = Panel(tokens[0])
+        self.buttons = []
+        for token in tokens[1:len(tokens)-1]:
+            self.buttons.append(Button(token))
 
     def __repr__(self):
         sb = []
@@ -80,9 +64,8 @@ class Machine:
         return " ".join(sb)
 
     def mash_buttons(self):
-        total = 0
-        while not self.panel.solved():
-            total += self.buttons.mash()
+        print(self.buttons)
+        return 0
 
 class Factory:
     def __init__(self, s):
