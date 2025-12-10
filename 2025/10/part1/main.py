@@ -34,6 +34,12 @@ class Panel:
         sb.append("".join(ssb))
         return " ".join(sb)
 
+    def solved(self):
+        for light, target in zip(self.lights, self.targets):
+            if light != target:
+                return False
+        return True
+
 class Button:
     def __init__(self, s):
         s = s.strip().replace(")", "")
@@ -58,6 +64,9 @@ class Buttons:
             sb.append(str(button))
         return " ".join(sb)
 
+    def mash(self):
+        return 0
+
 class Machine:
     def __init__(self, s):
         tok = s.split(" ")
@@ -69,6 +78,11 @@ class Machine:
         sb.append(str(self.panel))
         sb.append(str(self.buttons))
         return " ".join(sb)
+
+    def mash_buttons(self):
+        total = 0
+        while not self.panel.solved():
+            total += self.buttons.mash()
 
 class Factory:
     def __init__(self, s):
@@ -82,7 +96,12 @@ class Factory:
         for m in self.machines:
             sb.append(str(m))
         return "\n".join(sb)
-            
+
+    def mash_buttons(self):
+        total = 0
+        for machine in self.machines:
+            total += machine.mash_buttons()
+        return total
 
 def main():
     print("Hello from part1!")
