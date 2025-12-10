@@ -1,18 +1,19 @@
 from itertools import product
+from collections import defaultdict
 
 class Panel:
     def __init__(self, s):
         s = s.strip().replace("]","")
         s = s.strip().replace("[","")
-        self.lights = []
-        self.targets = []
+        self._lights = []
+        self._targets = []
         for c in s:
             assert c in ".#"
-            self.lights.append(0)
+            self._lights.append(0)
             if c == ".":
-                self.targets.append(0)
+                self._targets.append(0)
                 continue
-            self.targets.append(1)
+            self._targets.append(1)
 
     def repr_helper(self, things):
         sb = []
@@ -27,35 +28,45 @@ class Panel:
 
     def __repr__(self):
         sb = []
-        sb.append(self.repr_helper(self.lights))
-        sb.append(self.repr_helper(self.targets))
+        sb.append(self.repr_helper(self._lights))
+        sb.append(self.repr_helper(self._targets))
         return " ".join(sb)
 
+    def lights(self):
+        return list(map(lambda x: x[0], filter(lambda x: x[1], enumerate(self._lights))))
+
+    def targets(self):
+        return list(map(lambda x: x[0], filter(lambda x: x[1], enumerate(self._targets))))
+
     def solved(self):
-        for light, target in zip(self.lights, self.targets):
-            if light != target:
-                return False
-        return True
+        return self.lights() == self.targets()
 
 class Button:
     def __init__(self, s):
         s = s.strip().replace(")", "")
         s = s.strip().replace("(", "")
-        self.toggles = list(map(int, s.split(",")))
+        self._toggles = list(map(int, s.split(",")))
 
     def __repr__(self):
         sb = []
-        for toggle in self.toggles:
+        for toggle in self._toggles:
             sb.append(str(toggle))
         return "(" + ",".join(sb) + ")"
+
+    def toggles(self):
+        return self._toggles
 
 class Machine:
     def __init__(self, s):
         tokens = s.split(" ")
         self.panel = Panel(tokens[0])
         self.buttons = []
+        self.button_map = defaultdict(list)
         for token in tokens[1:len(tokens)-1]:
-            self.buttons.append(Button(token))
+            button = Button(token)
+            self.buttons.append(button)
+            for toggle in button.toggles():
+                self.button_map[toggle].append(button)
 
     def __repr__(self):
         sb = []
@@ -64,7 +75,10 @@ class Machine:
         return " ".join(sb)
 
     def mash_buttons(self):
-        print(self.buttons)
+        print(self.panel.targets())
+        print(self.panel.lights())
+        print(self.panel.solved())
+        print(self.button_map)
         return 0
 
 class Factory:
