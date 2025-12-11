@@ -29,6 +29,7 @@ class Machine:
     def adjust(self):
         # TODO use buttons to increment via list(map(lambda a:a[0]+a[1],zip(x,y)))
         # and use button_map to find candidate presses which affect a given button
+        # use max(self.joltages) to limit iteration
         return 0
 
 class Factory:
