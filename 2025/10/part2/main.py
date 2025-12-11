@@ -1,6 +1,7 @@
 from itertools import product, combinations
 from collections import defaultdict
 import math
+from copy import copy, deepcopy
 
 def parse_joltages(s):
     return list(map(int, s.strip().replace("{", "").replace("}", "").split(",")))
@@ -93,10 +94,23 @@ class Joltages:
                     smallest = gap
                     continue
         return result
-    def safest_button(self, rhs, buttons, i):
-        j = abs(self - rhs)
-        # given the target index i, and the candidate buttons, find the button which when pressed will have the least collateral effect
-        ...
+    def __getitem__(self, i):
+        return self.jj[i]
+    def __setitem__(self, i, n):
+        assert(type(n) is int)
+        self.jj[i] = n
+    def __copy__(self):
+        return Joltages(self.jj)
+    def safest_button(self, buttons, i):
+        # given the target index i, and the candidate buttons, find the button
+        # which when pressed will have the least collateral effect
+        sizes = []
+        for button in buttons:
+            b = copy(button)
+            b[i] = 0
+            sizes.append(int(self - b))
+        print(f"sizes = {sizes}")
+        return sizes.index(max(sizes))
     
 class Machine:
     def __init__(self, s):
@@ -112,7 +126,10 @@ class Machine:
             print(f"gap is at {i}")
             candidate_buttons = self.button_map[i]
             print(f"candidate buttons = {candidate_buttons}")
-            safest_button = j.safest_button(self.joltages, candidate_buttons, i)
+            distances_j = abs(self.joltages - j)
+            print(f"distances_j = {distances_j}")
+            safest = distances_j.safest_button(candidate_buttons, i)
+            print(f"safest = {safest}")
             break
 
         return 0
