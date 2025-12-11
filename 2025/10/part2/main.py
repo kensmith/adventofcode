@@ -39,6 +39,15 @@ class Joltages:
         return "{" + ",".join(map(str, self.jj)) + "}"
     def __len__(self):
         return len(self.jj)
+    def __int__(self):
+        base = max(self.jj)
+        place = 0
+        result = 0
+        for p in self.jj:
+            mul = math.pow(base, place)
+            result += p*mul
+            place += 1
+        return int(result)
     def _inequality_helper(self, rhs):
         base = max(self.jj + rhs.jj)
         lhs_value = 0
@@ -85,6 +94,7 @@ class Joltages:
                     continue
         return result
     def safest_button(self, rhs, buttons, i):
+        j = abs(self - rhs)
         # given the target index i, and the candidate buttons, find the button which when pressed will have the least collateral effect
         ...
     

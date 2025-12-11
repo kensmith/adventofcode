@@ -38,4 +38,5 @@ def test_joltage():
     assert Joltages([-3, 0, 1, -2]) == lhs
     lhs == abs(lhs)
     assert Joltages([3, 0, 1, 2]) == lhs
+    assert 66 == int(lhs)
 
