@@ -33,11 +33,35 @@ class Joltages:
         return "{" + ",".join(map(str, self.jj)) + "}"
     def __len__(self):
         return len(self.jj)
+    def _inequality_helper(self, rhs):
+        base = max(self.jj + rhs.jj)
+        lhs_value = 0
+        rhs_value = 0
+        place = 0
+        for p in zip(self.jj, rhs.jj):
+            mul = math.pow(base, place)
+            lhs_value += p[0]*mul
+            rhs_value += p[1]*mul
+            place += 1
+        return lhs_value, rhs_value
+    def __lt__(self, rhs):
+        lhs_value, rhs_value = self._inequality_helper(rhs)
+        return lhs_value < rhs_value
+    def __gt__(self, rhs):
+        lhs_value, rhs_value = self._inequality_helper(rhs)
+        return lhs_value > rhs_value
+    def __le__(self, rhs):
+        lhs_value, rhs_value = self._inequality_helper(rhs)
+        return int(lhs_value) <= int(rhs_value)
+    def __ge__(self, rhs):
+        lhs_value, rhs_value = self._inequality_helper(rhs)
+        return int(lhs_value) > int(rhs_value)
     
 class Machine:
     def __init__(self, s):
         tokens = s.split(" ")
         self.joltages = Joltages(parse_joltages(tokens[-1]))
+        print(f"joltages = {self.joltages}")
         self.buttons, self.button_map = parse_buttons(tokens[1:len(tokens)-1], len(self.joltages))
 
     def adjust(self):

@@ -21,3 +21,10 @@ def test_joltage():
     lhs += rhs
     assert "{1,3,3,5}" == str(lhs)
     assert lhs == Joltages([1,3,3,5])
+    assert new_rhs < lhs
+    assert lhs > new_rhs
+    assert new_rhs <= lhs
+    assert lhs >= new_rhs
+    new_new_rhs = Joltages([1,3,3,5])
+    assert lhs <= new_new_rhs
+    assert new_new_rhs <= lhs
