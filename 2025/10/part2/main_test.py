@@ -9,4 +9,4 @@ sample = """
 def test_sample():
     print("")
     f = Factory(sample)
-    assert 7 == f.start()
+    print(f.adjust())

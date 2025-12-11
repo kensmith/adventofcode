@@ -2,40 +2,29 @@ from itertools import product, combinations
 from collections import defaultdict
 import math
 
-def parse_target(s):
-    s = s.strip().replace("[","").replace("]", "")
-    result = 0
-    for i, c in enumerate(s):
-        if c == "#":
-            result += math.pow(2, i)
-    return int(result)
-
 def parse_joltages(s):
     return list(map(int, s.strip().replace("{", "").replace("}", "").split(",")))
 
-def parse_buttons_as_ints(ss):
-    results = []
-    for button in parse_buttons_as_lists(ss):
-        result = 0
-        for i in button:
-            result += math.pow(2, i)
-        results.append(int(result))
-    return results
-
-def parse_buttons_as_lists(ss):
-    result = []
+def parse_buttons(ss, n):
+    button_values = []
+    button_map = defaultdict(list)
     for s in ss:
-        result.append(list(map(int, s.strip().replace(")", "").replace("(", "").split(","))))
-    return result
+        result = [0] * n
+        keys = []
+        for i in map(int, s.strip().replace(")", "").replace("(", "").split(",")):
+            result[i] = 1
+            keys.append(i)
+        button_values.append(result)
+        for key in keys:
+            button_map[key].append(result)
+    print(button_map)
+    return button_values, button_map
     
 class Machine:
     def __init__(self, s):
         tokens = s.split(" ")
-        self.target = parse_target(tokens[0])
         self.joltages = parse_joltages(tokens[-1])
-        self.button_ints = parse_buttons_as_ints(tokens[1:len(tokens)-1])
-        self.button_lists = parse_buttons_as_lists(tokens[1:len(tokens)-1])
-        print(self.button_lists)
+        self.buttons, self.button_map = parse_buttons(tokens[1:len(tokens)-1], len(self.joltages))
 
     def start(self):
         valid_seqs = []
@@ -50,7 +39,9 @@ class Machine:
         return seq_lengths[0]
 
     def adjust(self):
-        ...
+        # TODO use buttons to increment via list(map(lambda a:a[0]+a[1],zip(x,y)))
+        # and use button_map to find candidate presses which affect a given button
+        return 0
 
 class Factory:
     def __init__(self, s):
@@ -58,12 +49,6 @@ class Factory:
         self.machines = []
         for line in lines:
             self.machines.append(Machine(line))
-
-    def start(self):
-        result = 0
-        for machine in self.machines:
-            result += machine.start()
-        return result
 
     def adjust(self):
         result = 0
@@ -74,7 +59,6 @@ class Factory:
 def main():
     with open("input") as f:
         f = Factory(f.read())
-        assert 461 == f.start()
 
 if __name__ == "__main__":
     main()
