@@ -9,5 +9,4 @@ sample = """
 def test_sample():
     print("")
     f = Factory(sample)
-    print(f)
-    print(f.mash_buttons())
+    assert 7 == f.start()
