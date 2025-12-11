@@ -29,6 +29,9 @@ class Joltages:
     def __add__(self, rhs):
         self.jj = list(map(lambda x: x[0]+x[1], zip(self.jj, rhs.jj)))
         return self
+    def __sub__(self, rhs):
+        self.jj = list(map(lambda x: x[0]-x[1], zip(self.jj, rhs.jj)))
+        return self
     def __repr__(self):
         return "{" + ",".join(map(str, self.jj)) + "}"
     def __len__(self):
@@ -56,6 +59,31 @@ class Joltages:
     def __ge__(self, rhs):
         lhs_value, rhs_value = self._inequality_helper(rhs)
         return int(lhs_value) > int(rhs_value)
+    def solved_indices(self, rhs):
+        result = []
+        for i, x in enumerate(zip(self.jj, rhs.jj)):
+            a = x[0]
+            b = x[1]
+            gap = abs(a - b)
+            if gap == 0:
+                result.append(i)
+        return result
+    def closest_index_with_gap(self, rhs):
+        result = 0
+        smallest = -1
+        for i, x in enumerate(zip(self.jj, rhs.jj)):
+            a = x[0]
+            b = x[1]
+            gap = abs(a - b)
+            if gap > 0:
+                if smallest < 0 or gap < smallest:
+                    result = i
+                    smallest = gap
+                    continue
+        return result
+    def safest_button(self, rhs, buttons, i):
+        # given the target index i, and the candidate buttons, find the button which when pressed will 
+        ...
     
 class Machine:
     def __init__(self, s):
@@ -65,9 +93,15 @@ class Machine:
         self.buttons, self.button_map = parse_buttons(tokens[1:len(tokens)-1], len(self.joltages))
 
     def adjust(self):
-        # TODO use buttons to increment via list(map(lambda a:a[0]+a[1],zip(x,y)))
-        # and use button_map to find candidate presses which affect a given button
-        # use max(self.joltages) to limit iteration
+        while True:
+            j = Joltages([0]*len(self.joltages))
+            i = j.closest_index_with_gap(self.joltages)
+            print(f"gap is at {i}")
+            candidate_buttons = self.button_map[i]
+            print(f"candidate buttons = {candidate_buttons}")
+            safest_button = j.safest_button(self.joltages, candidate_buttons, i)
+            break
+
         return 0
 
 class Factory:

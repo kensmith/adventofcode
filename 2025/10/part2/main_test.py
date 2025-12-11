@@ -28,3 +28,9 @@ def test_joltage():
     new_new_rhs = Joltages([1,3,3,5])
     assert lhs <= new_new_rhs
     assert new_new_rhs <= lhs
+    lhs = Joltages([1,1,1,1])
+    rhs = Joltages([5,2,1,4])
+    assert 1 == lhs.closest_index_with_gap(rhs)
+    assert [2] == lhs.solved_indices(rhs)
+    rhs -= lhs
+    assert Joltages([4,1,0,3]) == rhs
