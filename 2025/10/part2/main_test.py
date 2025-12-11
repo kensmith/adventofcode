@@ -10,3 +10,14 @@ def test_sample():
     print("")
     f = Factory(sample)
     print(f.adjust())
+
+def test_joltage():
+    print("")
+    lhs = Joltages([1,2,3,4])
+    rhs = Joltages([0,1,0,1])
+    assert not lhs == rhs
+    new_rhs = Joltages([1,2,3,4])
+    assert lhs == new_rhs
+    lhs += rhs
+    assert "{1,3,3,5}" == str(lhs)
+    assert lhs == Joltages([1,3,3,5])
