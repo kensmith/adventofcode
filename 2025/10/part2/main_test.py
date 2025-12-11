@@ -34,3 +34,8 @@ def test_joltage():
     assert [2] == lhs.solved_indices(rhs)
     rhs -= lhs
     assert Joltages([4,1,0,3]) == rhs
+    lhs -= rhs
+    assert Joltages([-3, 0, 1, -2]) == lhs
+    lhs == abs(lhs)
+    assert Joltages([3, 0, 1, 2]) == lhs
+

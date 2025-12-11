@@ -24,6 +24,9 @@ def parse_buttons(ss, n):
 class Joltages:
     def __init__(self, jj):
         self.jj = jj
+    def __abs__(self):
+        self.jj = list(map(abs, self.jj))
+        return self
     def __eq__(self, rhs):
         return self.jj == rhs.jj
     def __add__(self, rhs):
