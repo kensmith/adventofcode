@@ -82,7 +82,7 @@ class Joltages:
                     continue
         return result
     def safest_button(self, rhs, buttons, i):
-        # given the target index i, and the candidate buttons, find the button which when pressed will 
+        # given the target index i, and the candidate buttons, find the button which when pressed will have the least collateral effect
         ...
     
 class Machine:
