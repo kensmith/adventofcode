@@ -40,3 +40,7 @@ def test_joltage():
     assert Joltages([3, 0, 1, 2]) == lhs
     assert 66 == int(lhs)
 
+def test_add():
+    lhs = [0,1,2,3]
+    rhs = [0,1,0,1]
+    assert [0,2,2,4] == add(lhs, rhs)

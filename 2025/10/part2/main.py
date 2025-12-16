@@ -6,6 +6,10 @@ from copy import copy, deepcopy
 def parse_joltages(s):
     return list(map(int, s.strip().replace("{", "").replace("}", "").split(",")))
 
+def add(lhs, rhs):
+    assert len(lhs) == len(rhs)
+    return list(map(lambda x: x[0]+x[1], zip(lhs, rhs)))
+
 def parse_buttons(ss, n):
     button_values = []
     button_map = defaultdict(list)
